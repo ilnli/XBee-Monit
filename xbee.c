@@ -42,6 +42,8 @@ static unsigned int bitrate_conversion[][2] = {
 #endif
 };
 
+#define SAMPLE_START_BYTE 16
+
 static int convert_bitrate(int speed)
 {
     int i;
@@ -70,7 +72,17 @@ int open_device(char *device, int speed)
         goto fail;
     }
     cfmakeraw(&tc);
+    // Set baud rate
     cfsetspeed(&tc, s);
+    // 8N1
+    tc.c_cflag &= ~PARENB;
+    tc.c_cflag &= ~CSTOPB;
+    tc.c_cflag &= ~CSIZE;
+    tc.c_cflag |= CS8;
+#if (defined CRTSCTS)
+    // Enable HW flow control
+    tc.c_cflag |= CRTSCTS; 
+#endif
     if (tcsetattr(fd, TCSANOW, &tc)) {
         perror("tcsetattr");
         goto fail;
@@ -198,3 +210,31 @@ int send_at_command_request(int fd, char *cmd, uint8_t *data, uint16_t n)
     send_frame(fd, AT_REQUEST, frame, n + 2);
     return 0;
 }
+
+
+void parse_data (uint8_t *data, uint16_t data_len, struct io_ds_rx *frame) {
+
+    frame->api_id = data[0];
+    frame->addr64[0] = data[1];
+    frame->addr64[1] = data[2];
+    frame->addr64[2] = data[3];
+    frame->addr64[3] = data[4];
+    frame->addr64[4] = data[5];
+    frame->addr64[5] = data[6];
+    frame->addr64[6] = data[7];
+    frame->addr64[7] = data[8];
+    frame->addr16[0] = data[9];
+    frame->addr16[1] = data[10];
+    frame->rcv_options = data[11];
+    frame->num_samples = data[12];
+    frame->digital_mask = ((uint16_t) data[13] << 8) | data[14];
+    frame->analog_mask = data[15];
+    frame->samples = (uint8_t *) malloc(data_len - SAMPLE_START_BYTE); // TODO: Free resourse after use!!!
+    if (frame->samples) {
+        memcpy((uint8_t*) frame->samples, (uint8_t*) data + SAMPLE_START_BYTE, data_len - SAMPLE_START_BYTE);
+    } else {
+        perror("parse_data");
+        exit (2);
+    }
+}
+
