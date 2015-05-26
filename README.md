@@ -1,4 +1,4 @@
-# xbee-alarm-monitor
+# XBee-Monit
 
 ## Introduction
 
