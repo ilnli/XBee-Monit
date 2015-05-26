@@ -18,6 +18,14 @@
 // Maximum payload size for Series 2 XBee is 84 bytes
 #define MAX_FRAME_LENGTH 84
 
+/*
+ * TODOs:
+ * 1. Daemonized
+ * 2. Monitor child process
+ * 3. Logging to syslog
+ * 4. Config file
+ */
+
 int main (int argc, char *argv[]) {
     
     if(argc < 2) {
