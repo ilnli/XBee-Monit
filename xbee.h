@@ -10,17 +10,13 @@ int open_device(char *device, int speed);
 #define REMOTE_AT_RESPONSE 0x97
 
 // Digital channel mask
-#define D00 0x0001
-#define D01 0x0002
-#define D02 0x0004
-#define D03 0x0008
-#define D04 0x0010
-#define D05 0x0020
-#define D06 0x0040
-#define D07 0x0080
-#define D10 0x0400
-#define D11 0x0800
-#define D12 0x1000
+#define D1 0x0002
+#define D2 0x0004
+#define D3 0x0008
+#define D4 0x0010
+#define D5 0x0400
+#define D6 0x0800
+#define D7 0x1000
 
 struct at_response {
     uint8_t api_id, frame_id;
