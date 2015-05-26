@@ -38,7 +38,6 @@ struct remote_at_response {
     uint8_t data[0];
 };
 
-
 struct io_ds_rx {
     uint8_t api_id;         // IO Data Sample Rx Indicator
     uint8_t addr64[8];      // Sender 64-bit (MAC/EUI64) address.
