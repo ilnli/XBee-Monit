@@ -41,22 +41,6 @@ int main (int argc, char *argv[]) {
         parse_data(frame_data, frame_data_len, &rx_data);
         curr_digiout = ((uint16_t) rx_data.samples[0] << 8) | rx_data.samples[1]; // digiout pins value
 
-        /* Debug */
-        /*
-        int i;
-        char s[BYTE_SIZE];
-        for (i = 0; i < (frame_data_len - 16); i++) {
-            printf("%02x ", rx_data.samples[i]);
-            print_binary(rx_data.samples[i]);
-            sprint_binary(rx_data.samples[i], s, BYTE_SIZE);
-            printf(" [%s] ", s);
-            printf("\n");
-        }
-        printf("\n");
-        printf("Temperature C: %f\n", calculate_tempC(xbee_volt(rx_data.samples[2], rx_data.samples[3])));
-        */
-        /***/
-
         if(curr_digiout != prev_digiout) {
             char msg[1024] = {0};
 
