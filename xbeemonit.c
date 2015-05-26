@@ -41,6 +41,7 @@ void signal_handler(int sig) {
     }
     exit(sig);
 }
+
 int main (int argc, char *argv[]) {
     
     if(argc < 3) {
@@ -89,7 +90,7 @@ int main (int argc, char *argv[]) {
             } 
             if ((curr_digiout ^ rx_data.digital_mask) & D2) {
                 strcat(msg, "D2 - PA Alarm");
-                syslog(LOG_WARNING, "D1 - PA Alarm");
+                syslog(LOG_WARNING, "D2 - PA Alarm");
                 sms_mail_flag = 1;
             } 
             if ((curr_digiout ^ rx_data.digital_mask) & D3) {
@@ -118,8 +119,13 @@ int main (int argc, char *argv[]) {
             if (!(curr_digiout ^ rx_data.digital_mask)) {
                 strcat(msg, "System - Restored");
                 syslog(LOG_INFO, "System - Restored");
+                // Only sms if warning messages are restored
+                if ((prev_digiout ^ rx_data.digital_mask) & (D2 | D3 | D7)) {
+                    sms_mail_flag = 1;
+                }
             }
 
+            
             if(sms_mail_flag) { 
                 mail(to_sms, msg);
             }
