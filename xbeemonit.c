@@ -85,53 +85,50 @@ int main (int argc, char *argv[]) {
 
             // Check pins
             if ((curr_digiout ^ rx_data.digital_mask) & D1) {
-                strcat(msg, "D1 - Fire Alarm");
+                strcat(msg, "D1 - Fire Alarm\n");
                 syslog(LOG_INFO, "D1 - Fire Alarm");
             } 
             if ((curr_digiout ^ rx_data.digital_mask) & D2) {
-                strcat(msg, "D2 - PA Alarm");
+                strcat(msg, "D2 - PA Alarm\n");
                 syslog(LOG_WARNING, "D2 - PA Alarm");
                 sms_mail_flag = 1;
             } 
             if ((curr_digiout ^ rx_data.digital_mask) & D3) {
-                strcat(msg, "D3 - Alarm");
+                strcat(msg, "D3 - Alarm\n");
                 syslog(LOG_WARNING, "D3 - Alarm");
                 sms_mail_flag = 1;
             } 
             if ((curr_digiout ^ rx_data.digital_mask) & D4) {
-                strcat(msg, "D4 - Armed");
+                strcat(msg, "D4 - Armed\n");
                 syslog(LOG_INFO, "D4 - Armed");
             } 
             if ((curr_digiout ^ rx_data.digital_mask) & D5) {
-                strcat(msg, "D5 - Zone Locked Out");
+                strcat(msg, "D5 - Zone Locked Out\n");
                 syslog(LOG_INFO, "D5 - Zone Locked Out");
             } 
             if ((curr_digiout ^ rx_data.digital_mask) & D6) {
-                strcat(msg, "D6 - Fault Present");
+                strcat(msg, "D6 - Fault Present\n");
                 syslog(LOG_INFO, "D6 - Fault Present");
             } 
             if ((curr_digiout ^ rx_data.digital_mask) & D7) {
-                strcat(msg, "D7 - Confirmed Alarm");
+                strcat(msg, "D7 - Confirmed Alarm\n");
                 syslog(LOG_WARNING, "D7 - Confirmed Alarm");
                 sms_mail_flag = 1;
             }
             // Pin restore
             if (!(curr_digiout ^ rx_data.digital_mask)) {
-                strcat(msg, "System - Restored");
+                strcat(msg, "System - Restored\n");
                 syslog(LOG_INFO, "System - Restored");
                 // Only sms if warning messages are restored
                 if ((prev_digiout ^ rx_data.digital_mask) & (D2 | D3 | D7)) {
                     sms_mail_flag = 1;
                 }
             }
-
-            
             if(sms_mail_flag) { 
                 mail(to_sms, msg);
             }
             mail(to, msg);
         }
-
         prev_digiout = curr_digiout;
         free(rx_data.samples);
         usleep(1000);
